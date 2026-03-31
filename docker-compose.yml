@@ -20,7 +20,7 @@ services:
       - UVICORN_HOST=${BACKEND_CONTAINER_ADDRESS:?'BACKEND_CONTAINER_ADDRESS is required'}
       - UVICORN_PORT=${BACKEND_CONTAINER_PORT:?'BACKEND_CONTAINER_PORT is required'}
       - UVICORN_RELOAD=${BACKEND_RELOAD:?'BACKEND_RELOAD is required'}
-      - CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-[]}
+      - CORS_ORIGINS=${BACKEND_CORS_ORIGINS:?'BACKEND_CORS_ORIGINS is required'}
       - LMS_API_KEY=${LMS_API_KEY:?'LMS_API_KEY is required'}
       - BACKEND_ENABLE_INTERACTIONS=${BACKEND_ENABLE_INTERACTIONS:?'BACKEND_ENABLE_INTERACTIONS is required'}
       - BACKEND_ENABLE_LEARNERS=${BACKEND_ENABLE_LEARNERS:?'BACKEND_ENABLE_LEARNERS is required'}
@@ -190,19 +190,19 @@ services:
     networks:
       - lms-network
     ports:
-      - ${QWEN_CODE_API_HOST_ADDRESS:?'QWEN_CODE_API_HOST_ADDRESS is required'}:${QWEN_CODE_API_HOST_PORT:?'QWEN_CODE_API_HOST_PORT is required'}:${QWEN_CODE_API_CONTAINER_PORT:-8080}
+      - ${QWEN_CODE_API_HOST_ADDRESS:?'QWEN_CODE_API_HOST_ADDRESS is required'}:${QWEN_CODE_API_HOST_PORT:?'QWEN_CODE_API_HOST_PORT is required'}:${QWEN_CODE_API_CONTAINER_PORT:?'QWEN_CODE_API_CONTAINER_PORT is required'}
     volumes:
       - ~/.qwen:/mnt/qwen-creds:ro
     environment:
-      - PORT=${QWEN_CODE_API_CONTAINER_PORT:-8080}
-      - ADDRESS=${QWEN_CODE_API_CONTAINER_ADDRESS:-0.0.0.0}
+      - PORT=${QWEN_CODE_API_CONTAINER_PORT:?'QWEN_CODE_API_CONTAINER_PORT is required'}
+      - ADDRESS=${QWEN_CODE_API_CONTAINER_ADDRESS:?'QWEN_CODE_API_CONTAINER_ADDRESS is required'}
       - DEFAULT_MODEL=${QWEN_CODE_API_MODEL:?'QWEN_CODE_API_MODEL is required'}
       - LOG_LEVEL=${QWEN_CODE_API_LOG_LEVEL:?'QWEN_CODE_API_LOG_LEVEL is required'}
       - MAX_RETRIES=${QWEN_CODE_API_MAX_RETRIES:?'QWEN_CODE_API_MAX_RETRIES is required'}
       - RETRY_DELAY_MS=${QWEN_CODE_API_RETRY_DELAY_MS:?'QWEN_CODE_API_RETRY_DELAY_MS is required'}
       - QWEN_CODE_AUTH_USE=${QWEN_CODE_API_AUTH_USE:?'QWEN_CODE_API_AUTH_USE is required'}
       - LOG_REQUESTS=${QWEN_CODE_API_LOG_REQUESTS:?'QWEN_CODE_API_LOG_REQUESTS is required'}
-      - QWEN_CODE_API_KEY=${QWEN_CODE_API_KEY:-}
+      - QWEN_CODE_API_KEY=${QWEN_CODE_API_KEY:?'QWEN_CODE_API_KEY is required'}
       - OTEL_SERVICE_NAME=Qwen Code API
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_METRICS_EXPORTER=none
@@ -221,8 +221,8 @@ services:
         - |
           import urllib.request
           req = urllib.request.Request(
-              'http://localhost:${QWEN_CODE_API_CONTAINER_PORT:-8080}/health',
-              headers={'X-API-Key': '${QWEN_CODE_API_KEY:-}'}
+              'http://localhost:${QWEN_CODE_API_CONTAINER_PORT:?'QWEN_CODE_API_CONTAINER_PORT is required'}/health',
+              headers={'X-API-Key': '${QWEN_CODE_API_KEY:?'QWEN_CODE_API_KEY is required'}'}
           )
           urllib.request.urlopen(req)
       interval: 30s
