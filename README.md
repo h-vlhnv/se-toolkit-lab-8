@@ -13,6 +13,7 @@
 
 ## What you will learn
 
+
 By the end of this lab, you should be able to say:
 
 > 1. I can explain what makes an AI agent different from a regular client like a web app or a bot.
